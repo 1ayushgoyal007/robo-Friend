@@ -1,6 +1,5 @@
 import React from 'react';
 import CardList from "./CardList";
-import {robots} from "./robots";
 import SearchBox from './SearchBox';
 import "./App.css";
 
@@ -8,7 +7,7 @@ class App extends React.Component {
     constructor(){
         super();
         this.state = {
-            robots:robots,
+            robots:[],
             searchfield:''
         };
     }
@@ -17,8 +16,15 @@ class App extends React.Component {
         this.setState({searchfield:event.target.value});      
     }
 
+    componentDidMount(){
+      fetch('https://cors-anywhere.herokuapp.com/'+'http://jsonplaceholder.typicode.com/users')
+        .then(response=>{
+         return response.json();
+        })
+        .then(users =>{this.setState({robots:users});
+        })
+    }
    
-
     render() {
         const { robots, searchfield } = this.state;
         const filteredRobots = robots.filter(robot =>{
@@ -26,6 +32,9 @@ class App extends React.Component {
         })
         
         console.log(filteredRobots);
+        if(this.state.robots.length === 0){
+          return <h1>Loading!!</h1>
+        }else{
         return (
             <div className='tc'>
               <h1 className='f1' >RoboFriends</h1>
@@ -35,6 +44,7 @@ class App extends React.Component {
               
             </div>
           );
+        }
       }
     }
 
